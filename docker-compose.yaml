@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: stoomstore
+    container_name: stoomstore-app
+    depends_on:
+      - postgresql
+    ports:
+      - "8080:8080"
+
