@@ -12,11 +12,41 @@ Isso abrirá a documentação interativa da API, permitindo que você veja todas
 
 ### Docker
 
-Se você preferir usar Docker, pode baixar a imagem pronta da aplicação usando o seguinte comando:
-
+Essta aplicação esta disponivel no dockerhub, para executa-la será preciso ter instalado em sua maquina o docker e o docker-compose, para iniciar a aplicação basta na raiz do diretorio onde esta o arquivo 
+docker-compose.yml executar o comando abaixo no terminal:
 ```sh
-docker pull robsonndumbledore/stoomstore
-docker run -p 8080:8080 robsonndumbledore/stoomstore:latest
+
+docker-compose up -d
+
+```
+abaixo o arquivo com as configurações dessa aplicação
+
+```yml
+version: "3"
+
+services:
+  postgres:
+    image: postgres
+    container_name: stoomstore-database
+    environment:
+      POSTGRES_DB: store
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    restart: always
+    volumes:
+      - ./postgresql-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    image: seu_usuario_dockerhub/stoomstore:latest
+    container_name: stoomstore-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
 ```
 Agora, a API estará disponível em seu ambiente local no mesmo endereço fornecido acima.
 ### Acesso Online
