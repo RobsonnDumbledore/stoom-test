@@ -1,0 +1,542 @@
+{
+	"info": {
+		"_postman_id": "29783021-c67b-4209-8b91-759a08883501",
+		"name": "StoomStore API",
+		"description": "<b> API created to manage products </b>\n\n\nContact Support:\n Name: stoomstore@gmail.com\n Email: stoomstore@gmail.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2895345"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "products",
+					"item": [
+						{
+							"name": "v1",
+							"item": [
+								{
+									"name": "create a new product",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"products\": [\n        {\n            \"name\": \"product005\",\n            \"description\": \"4GB RAM\",\n            \"price\": 1250.45,\n            \"active\": true,\n            \"brandId\": 4,\n            \"categoryIds\": [\n                5\n            ]\n        }\n    ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/products/v1/brand?brand=NIKE&page=0&size=10&sort =price&dir=desc",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"products",
+												"v1",
+												"brand"
+											],
+											"query": [
+												{
+													"key": "brand",
+													"value": "NIKE"
+												},
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "10"
+												},
+												{
+													"key": "sort ",
+													"value": "price"
+												},
+												{
+													"key": "dir",
+													"value": "desc"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find product by id",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/products/v1/:productId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"products",
+												"v1",
+												":productId"
+											],
+											"variable": [
+												{
+													"key": "productId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "change product status",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"status\": [\r\n        {\r\n            \"id\": 1,\r\n            \"isActive\": false\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"isActive\": false\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/products/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"products",
+												"v1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "update product",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"product updated\",\r\n  \"description\": \"new description\",\r\n  \"price\": 999,\r\n  \"active\": true,\r\n  \"brandId\": 1,\r\n  \"categoryIds\": [\r\n    1\r\n  ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/products/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"products",
+												"v1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find products by category",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/products/v1/category?category=CATEGORY&page=0&size=10&sort =price&dir=desc",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"products",
+												"v1",
+												"category"
+											],
+											"query": [
+												{
+													"key": "category",
+													"value": "CATEGORY"
+												},
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "10"
+												},
+												{
+													"key": "sort ",
+													"value": "price"
+												},
+												{
+													"key": "dir",
+													"value": "desc"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find product by brand",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/products/v1/brand?brand=NIKE&page=0&size=10&sort =price&dir=desc",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"products",
+												"v1",
+												"brand"
+											],
+											"query": [
+												{
+													"key": "brand",
+													"value": "NIKE"
+												},
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "10"
+												},
+												{
+													"key": "sort ",
+													"value": "price"
+												},
+												{
+													"key": "dir",
+													"value": "desc"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find all products",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/products/v1?productName=&page=0&size=10&sort =price&dir=desc",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"products",
+												"v1"
+											],
+											"query": [
+												{
+													"key": "productName",
+													"value": ""
+												},
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "10"
+												},
+												{
+													"key": "sort ",
+													"value": "price"
+												},
+												{
+													"key": "dir",
+													"value": "desc"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "categories",
+					"item": [
+						{
+							"name": "v1",
+							"item": [
+								{
+									"name": "create a new category",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"categories\": [\n        {\n            \"name\": \"ELETRONICS\",\n            \"active\": true\n        },\n        {\n            \"name\": \"HEALTH\",\n            \"active\": true\n        }\n    ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/categories/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"categories",
+												"v1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "change category status",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"status\": [\r\n        {\r\n            \"id\": 1,\r\n            \"isActive\": false\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"isActive\": false\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/categories/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"categories",
+												"v1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "update category",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"CATEGORY UPDATED\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/categories/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"categories",
+												"v1"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "find category by id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/categories/v1/:categoryId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"v1",
+										":categoryId"
+									],
+									"variable": [
+										{
+											"key": "categoryId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "brands",
+					"item": [
+						{
+							"name": "v1",
+							"item": [
+								{
+									"name": "create a new brand",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"brands\": [\n        {\n            \"name\": \"brand006\",\n            \"active\": true\n        }\n    ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/brands/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"brands",
+												"v1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find brand by id",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/brands/v1/2",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"brands",
+												"v1",
+												"2"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "change brand status",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"status\": [\r\n        {\r\n            \"id\": 1,\r\n            \"isActive\": true\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"isActive\": false\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/brands/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"brands",
+												"v1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "update brand",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"id\": 5,\r\n  \"name\": \"NEW BRAND\",\r\n  \"active\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/brands/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"brands",
+												"v1"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		}
+	]
+}
