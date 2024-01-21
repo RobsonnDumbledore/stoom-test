@@ -39,7 +39,7 @@ services:
       - "5432:5432"
 
   app:
-    image: seu_usuario_dockerhub/stoomstore:latest
+    image: robsonndumbledore/stoomstore:latest
     container_name: stoomstore-app
     restart: unless-stopped
     ports:
