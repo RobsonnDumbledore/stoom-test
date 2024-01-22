@@ -9,17 +9,25 @@ import br.com.stoom.entities.BrandEntity;
 import br.com.stoom.entities.CategoryEntity;
 import br.com.stoom.services.brand.BrandService;
 import br.com.stoom.utils.JsonUtils;
+import br.com.stoom.utils.Pagination;
+import br.com.stoom.utils.SearchQuery;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -135,6 +143,34 @@ public class BrandResourceTest extends ResourceTest {
     @Test
     @DisplayName(
             """
+                                            
+                Dado algumas marcas anteriormente cadastradas
+                Quando o servico de remocao de marcas for chamado
+                Entao essas marcas devem ser removidas
+                                                
+            """
+    )
+    public void removeBrandById() throws Exception {
+
+        final var input = Set.of(1L,2L,3L);
+
+        final var request = delete(URL.concat("/v1"))
+                .queryParam("brandIds", "1,2,3")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON);
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(brandService).deleteBrand(argThat( ids ->
+                ids != null && input.containsAll(ids) && ids.containsAll(input)
+        ));
+    }
+
+    @Test
+    @DisplayName(
+            """
 
                 Dado uma marca anteriormente cadastrada
                 Quando o endpoint de atualizacao de marca for chamado
@@ -159,6 +195,55 @@ public class BrandResourceTest extends ResourceTest {
                 b -> b.getId().equals(input.getId()) &&
                         b.getName().equals(input.getName())
         ));
+
+    }
+
+    @Test
+    @DisplayName(
+            """
+                                            
+                Dado que uma lista de marcas ja cadastrados
+                Quando o endpoint de busca for chamado
+                E essas marcas estiverem com status ativo
+                Entao todas marcas devem ser listadas
+                                                
+            """
+    )
+    public void findAllBrands() throws Exception {
+
+        final var brands = List.of(
+                new BrandEntity(1L, "ELETRONICOS", true),
+                new BrandEntity(2L, "ROUPAS", true),
+                new BrandEntity(3L,"BRINQUEDOS", true)
+        );
+
+        when(brandService.findAllBrands(anyString(), any(SearchQuery.class)))
+                .thenReturn(new Pagination<>(brands, 0, 10, 3, 1));
+
+        final var request = get(URL.concat("/v1"))
+                .queryParam("page", "0")
+                .queryParam("size", "10")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON);
+
+        final var response =  this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        response
+                .andExpect(jsonPath("content[0].id").value(1L))
+                .andExpect(jsonPath("content[0].name").value("ELETRONICOS"))
+                .andExpect(jsonPath("content[0].active").value(true))
+                .andExpect(jsonPath("content[1].id").value(2L))
+                .andExpect(jsonPath("content[1].name").value("ROUPAS"))
+                .andExpect(jsonPath("content[1].active").value(true))
+                .andExpect(jsonPath("content[2].id").value(3L))
+                .andExpect(jsonPath("content[2].name").value("BRINQUEDOS"))
+                .andExpect(jsonPath("content[2].active").value(true))
+                .andExpect(jsonPath("currentPage").value(0))
+                .andExpect(jsonPath("totalElements").value(3))
+                .andExpect(jsonPath("totalPages").value(1))
+                .andExpect(jsonPath("size").value(10));
 
     }
 

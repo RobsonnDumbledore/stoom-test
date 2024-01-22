@@ -31,7 +31,7 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-	testImplementation("org.flywaydb:flyway-core")
+	implementation("org.flywaydb:flyway-core")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
@@ -40,17 +40,14 @@ tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
 	}
 }
 
-
-
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
 flyway {
 
-	url = (System.getenv("FLYWAY_DB") ?: "jdbc:postgresql://ec2-54-234-13-16.compute-1.amazonaws.com:5432/dbjch7amri1ncc?currentSchema=public")
-	user = (System.getenv("FLYWAY_USER") ?: "djqydhtqcklhnh")
-	password = (System.getenv("FLYWAY_PASS") ?: "455d35ecff8b256bc509cdd61329e54d438365fe209098f7a61f8afa7b56829b")
-	cleanDisabled = false
+	url = (System.getenv("FLYWAY_DB") ?: "jdbc:postgresql://stoomstore-databasae:5432/store?currentSchema=public")
+	user = (System.getenv("FLYWAY_USER") ?: "postgres")
+	password = (System.getenv("FLYWAY_PASS") ?: "12345")
 
 }

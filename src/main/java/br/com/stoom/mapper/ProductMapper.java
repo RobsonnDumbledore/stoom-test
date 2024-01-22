@@ -17,7 +17,10 @@ public interface ProductMapper {
                 createProductRequest.name(),
                 createProductRequest.description(),
                 createProductRequest.price(),
+                createProductRequest.discount(),
                 createProductRequest.active(),
+                createProductRequest.imageName(),
+                createProductRequest.sku(),
                 BrandMapper.toEntity(createProductRequest.brandId()),
                 CategoryMapper.toEntity(createProductRequest.categoryIds())
         );
@@ -37,6 +40,9 @@ public interface ProductMapper {
                 updateProductRequest.name(),
                 updateProductRequest.description(),
                 updateProductRequest.price(),
+                updateProductRequest.discount(),
+                updateProductRequest.imageName(),
+                updateProductRequest.sku(),
                 updateProductRequest.active(),
                 BrandMapper.toEntity(updateProductRequest.brandId()),
                 CategoryMapper.toEntity(updateProductRequest.categoryIds())
@@ -64,6 +70,9 @@ public interface ProductMapper {
                 productEntity.getId(),
                 productEntity.getName(),
                 productEntity.getDescription(),
+                productEntity.getImageName(),
+                productEntity.getSku(),
+                productEntity.getDiscount(),
                 productEntity.getPrice(),
                 productEntity.isActive(),
                 brand,
@@ -81,6 +90,9 @@ public interface ProductMapper {
                                  p.getId(),
                                  p.getName(),
                                  p.getDescription(),
+                                 p.getDiscount(),
+                                 p.getImageName(),
+                                 p.getSku(),
                                  p.getPrice(),
                                  p.isActive()
                         ))
@@ -101,7 +113,10 @@ public interface ProductMapper {
                                 p.getId(),
                                 p.getName(),
                                 p.getDescription(),
+                                p.getImageName(),
+                                p.getSku(),
                                 p.getPrice(),
+                                p.getDiscount(),
                                 p.isActive()
                         ))
                         .collect(Collectors.toList()),
@@ -122,6 +137,9 @@ public interface ProductMapper {
                                 p.getId(),
                                 p.getName(),
                                 p.getDescription(),
+                                p.getImageName(),
+                                p.getSku(),
+                                p.getDiscount(),
                                 p.getPrice(),
                                 p.isActive()
                         ))

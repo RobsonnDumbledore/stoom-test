@@ -1,16 +1,16 @@
-CREATE TABLE brand (
+CREATE TABLE IF NOT EXISTS brand (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     active BOOLEAN DEFAULT true
 );
 
-CREATE TABLE category (
+CREATE TABLE IF NOT EXISTS category (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     active BOOLEAN DEFAULT true
 );
 
-CREATE TABLE product (
+CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -19,7 +19,7 @@ CREATE TABLE product (
     brand_id INTEGER
 );
 
-CREATE TABLE product_category (
+CREATE TABLE IF NOT EXISTS product_category (
     product_id INTEGER,
     category_id INTEGER,
     PRIMARY KEY (product_id, category_id)

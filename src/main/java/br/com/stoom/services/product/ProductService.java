@@ -13,6 +13,7 @@ public interface ProductService {
     void createProduct(Set<ProductEntity> productEntity);
     void updateProduct(ProductEntity productEntity);
     void changeProductStatus(Map<Long, Boolean> productStatus);
+    void deleteProduct(Set<Long> productIds);
 
     ProductEntity findProductById(Long productId);
 

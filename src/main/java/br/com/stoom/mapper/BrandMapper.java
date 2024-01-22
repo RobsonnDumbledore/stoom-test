@@ -1,8 +1,12 @@
 package br.com.stoom.mapper;
 
 import br.com.stoom.dto.request.*;
+import br.com.stoom.dto.response.FindAllBrandResponse;
 import br.com.stoom.dto.response.FindBrandByIdResponse;
+import br.com.stoom.dto.response.FindProductByCategoryResponse;
 import br.com.stoom.entities.BrandEntity;
+import br.com.stoom.entities.ProductEntity;
+import br.com.stoom.utils.Pagination;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -50,6 +54,24 @@ public interface BrandMapper {
                         ChangeStatusRequest::id,
                         ChangeStatusRequest::isActive
                 ));
+    }
+
+    static Pagination<FindAllBrandResponse> toResponse(Pagination<BrandEntity> pagination) {
+
+        return new Pagination<>(
+                pagination.content()
+                        .stream()
+                        .map(p -> new FindAllBrandResponse(
+                                p.getId(),
+                                p.getName(),
+                                p.isActive()
+                        ))
+                        .collect(Collectors.toList()),
+                pagination.currentPage(),
+                pagination.size(),
+                pagination.totalElements(),
+                pagination.totalPages()
+        );
     }
 
 }

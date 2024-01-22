@@ -24,6 +24,12 @@ public class BrandEntity {
     public BrandEntity() {
     }
 
+    public BrandEntity(Long id, String name, boolean active) {
+        this.id = id;
+        this.name = name;
+        this.active = active;
+    }
+
     public BrandEntity(String name, boolean active) {
         this.name = name;
         this.active = active;

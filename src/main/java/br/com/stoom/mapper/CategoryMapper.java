@@ -1,8 +1,12 @@
 package br.com.stoom.mapper;
 
 import br.com.stoom.dto.request.*;
+import br.com.stoom.dto.response.FindAllBrandResponse;
+import br.com.stoom.dto.response.FindAllCategoryResponse;
 import br.com.stoom.dto.response.FindCategoryByIdResponse;
+import br.com.stoom.entities.BrandEntity;
 import br.com.stoom.entities.CategoryEntity;
+import br.com.stoom.utils.Pagination;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -65,6 +69,24 @@ public interface CategoryMapper {
                         ChangeStatusRequest::id,
                         ChangeStatusRequest::isActive
                 ));
+    }
+
+    static Pagination<FindAllCategoryResponse> toResponse(Pagination<CategoryEntity> pagination) {
+
+        return new Pagination<>(
+                pagination.content()
+                        .stream()
+                        .map(p -> new FindAllCategoryResponse(
+                                p.getId(),
+                                p.getName(),
+                                p.isActive()
+                        ))
+                        .collect(Collectors.toList()),
+                pagination.currentPage(),
+                pagination.size(),
+                pagination.totalElements(),
+                pagination.totalPages()
+        );
     }
 
 }

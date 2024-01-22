@@ -1,7 +1,12 @@
 package br.com.stoom.resources;
 
+import br.com.stoom.dto.response.FindAllBrandResponse;
+import br.com.stoom.dto.response.FindAllCategoryResponse;
+import br.com.stoom.mapper.BrandMapper;
 import br.com.stoom.mapper.CategoryMapper;
 import br.com.stoom.resources.docs.CategoryAPI;
+import br.com.stoom.utils.Pagination;
+import br.com.stoom.utils.SearchQuery;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import br.com.stoom.services.category.CategoryService;
@@ -11,6 +16,8 @@ import br.com.stoom.dto.request.CreateCategoryRequestSet;
 import br.com.stoom.dto.response.FindCategoryByIdResponse;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -61,6 +68,36 @@ public class CategoryResource implements CategoryAPI {
         final var category = CategoryMapper.toResponse(categoryService.findCategoryById(categoryId));
 
         return ResponseEntity.ok(category);
+    }
+
+    @Override
+    @DeleteMapping("/v1")
+    public ResponseEntity<Void> removeCategoryById(Set<Long> categoryIds) {
+
+        categoryService.deleteCategory(categoryIds);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @GetMapping("/v1")
+    public ResponseEntity<Pagination<FindAllCategoryResponse>> findAllCategories(
+            String categoryName,
+            int page,
+            int size,
+            String sort,
+            String direction
+    ) {
+        final var query = SearchQuery.with(
+                page,
+                size,
+                sort,
+                direction
+        );
+
+        final var brands = CategoryMapper.toResponse(categoryService.findAllCategories(categoryName, query));
+
+        return ResponseEntity.ok(brands);
     }
 
 }

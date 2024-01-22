@@ -6,6 +6,7 @@ import java.util.Set;
 import br.com.stoom.repositories.BrandRepository;
 import br.com.stoom.repositories.CategoryRepository;
 import br.com.stoom.repositories.ProductRepository;
+import br.com.stoom.utils.SearchQuery;
 import org.junit.jupiter.api.Test;
 import br.com.stoom.PostgresGatewayTest;
 import br.com.stoom.entities.BrandEntity;
@@ -137,6 +138,30 @@ public class BrandServiceTest extends PostgresGatewayTest {
         assertEquals(1L, categoryAfterUpdate.getId());
         assertEquals("Marca001", categoryAfterUpdate.getName());
 
+    }
+
+    @Test
+    @DisplayName(
+            """
+                                            
+                Dado que uma lista de marcas ja cadastrados
+                Quando o servico de busca por marca for chamado
+                E essas marcas estiverem ativas
+                Entao essas marcas devem ser listadas
+                                                
+            """
+    )
+    public void findAllBrands() {
+
+        final var page = SearchQuery.with(0, 10, "", "name", "ASC");
+        final var product = brandService
+                .findAllBrands(null, page)
+                .content()
+                .stream().findFirst();
+
+        assertTrue(product.get().isActive());
+        assertEquals(product.get().getName(), "Marca01");
+        assertEquals(product.get().getId(), 1L);
     }
 
 }

@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -60,6 +61,9 @@ public class ProductResourceTest extends ResourceTest {
                 "Produto666",
                 "Descrição do produto 666",
                 100.50,
+                0.0,
+                null,
+                "14785236",
                 true,
                 5L,
                 Set.of(5L)
@@ -80,6 +84,8 @@ public class ProductResourceTest extends ResourceTest {
                 set.stream().anyMatch(b ->
                         b.getName().equals(product01.name()) &&
                                 b.getDescription().equals(product01.description()) &&
+                                b.getDiscount() == (product01.discount()) &&
+                                b.getSku().equals(product01.sku()) &&
                                 b.getPrice() == (product01.price()) &&
                                 b.isActive() == product01.active())
                 )
@@ -105,6 +111,9 @@ public class ProductResourceTest extends ResourceTest {
                         "Produto0099",
                         "Descricao do produto 0099",
                         100.50,
+                        0.0,
+                        null,
+                        "3625874",
                         true,
                         new BrandEntity(4L, "Marca0018"),
                         Set.of(new CategoryEntity(4L, "Categoria0018"))
@@ -123,11 +132,42 @@ public class ProductResourceTest extends ResourceTest {
                .andExpect(jsonPath("name").value("Produto0099"))
                .andExpect(jsonPath("description").value("Descricao do produto 0099"))
                .andExpect(jsonPath("price").value(100.5))
+               .andExpect(jsonPath("discount").value(0.0))
+               .andExpect(jsonPath("sku").value("3625874"))
                .andExpect(jsonPath("active").value(true))
                .andExpect(jsonPath("brand.id").value(4L))
                .andExpect(jsonPath("brand.name").value("Marca0018"))
                .andExpect(jsonPath("categories[0].id").value(4L))
                .andExpect(jsonPath("categories[0].name").value("Categoria0018"));
+
+    }
+
+    @Test
+    @DisplayName(
+            """
+                                            
+                Dado alguns produtos anteriormente cadastrados
+                Quando o servico de remocao de produto for chamado
+                Entao esses produtos deve ser removidos
+                                                
+            """
+    )
+    public void removeProducts() throws Exception {
+
+        final var input = Set.of(1L,2L,3L);
+
+        final var request = delete(URL.concat("/v1"))
+                .queryParam("productIds", "1,2,3")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON);
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(productService).deleteProduct(argThat( ids ->
+                ids != null && input.containsAll(ids) && ids.containsAll(input)
+        ));
 
     }
 
@@ -179,6 +219,9 @@ public class ProductResourceTest extends ResourceTest {
                 "Produto 05 atualizado",
                 "Descrição do produto 05",
                 200.50,
+                0.0,
+                null,
+                "14785236",
                 true,
                 4L,
                 Set.of(4L)
@@ -198,6 +241,8 @@ public class ProductResourceTest extends ResourceTest {
                         product.getName().equals("Produto 05 atualizado") &&
                         product.getDescription().equals("Descrição do produto 05") &&
                         product.getPrice() == (200.50) &&
+                        product.getDiscount() == (0.0) &&
+                        product.getSku().equals("14785236") &&
                         product.isActive()&&
                         product.getBrand().getId().equals(4L)));
 
@@ -217,9 +262,9 @@ public class ProductResourceTest extends ResourceTest {
     public void findProductsByCategory() throws Exception {
 
         List<ProductEntity> testProducts = List.of(
-                new ProductEntity(1L, "Produto 1", "Descricao do produto 1", 10.00, true, new BrandEntity(), new HashSet<>()),
-                new ProductEntity(2L, "Produto 2", "Descricao do produto 2", 20.00, true, new BrandEntity(), new HashSet<>()),
-                new ProductEntity(3L, "Produto 3", "Descricao do produto 3", 30.00, true, new BrandEntity(), new HashSet<>())
+                new ProductEntity(1L, "Produto 1", "Descricao do produto 1", 10.00, 0.0, null, "123456", true, new BrandEntity(), new HashSet<>()),
+                new ProductEntity(2L, "Produto 2", "Descricao do produto 2", 20.00,0.0, null, "123456", true, new BrandEntity(), new HashSet<>()),
+                new ProductEntity(3L, "Produto 3", "Descricao do produto 3", 30.00,0.0, null, "123456", true, new BrandEntity(), new HashSet<>())
         );
 
         when(productService.findProductByCategory(anyString(), any(SearchQuery.class)))
@@ -241,6 +286,8 @@ public class ProductResourceTest extends ResourceTest {
                 .andExpect(jsonPath("content[0].name").value("Produto 1"))
                 .andExpect(jsonPath("content[0].description").value("Descricao do produto 1"))
                 .andExpect(jsonPath("content[0].price").value(10.0))
+                .andExpect(jsonPath("content[0].discount").value(0.0))
+                .andExpect(jsonPath("content[0].sku").value("123456"))
                 .andExpect(jsonPath("content[0].active").value(true))
                 .andExpect(jsonPath("currentPage").value(0))
                 .andExpect(jsonPath("totalElements").value(3))
@@ -262,9 +309,9 @@ public class ProductResourceTest extends ResourceTest {
     public void findProductsByBrand() throws Exception {
 
         List<ProductEntity> testProducts = List.of(
-                new ProductEntity(1L, "Produto 1", "Descricao do produto 1", 10.00, true, new BrandEntity(), new HashSet<>()),
-                new ProductEntity(2L, "Produto 2", "Descricao do produto 2", 20.00, true, new BrandEntity(), new HashSet<>()),
-                new ProductEntity(3L, "Produto 3", "Descricao do produto 3", 30.00, true, new BrandEntity(), new HashSet<>())
+                new ProductEntity(1L, "Produto 1", "Descricao do produto 1", 10.00, 0.0, null, "123456", true, new BrandEntity(), new HashSet<>()),
+                new ProductEntity(2L, "Produto 2", "Descricao do produto 2", 20.00,0.0, null, "123456", true, new BrandEntity(), new HashSet<>()),
+                new ProductEntity(3L, "Produto 3", "Descricao do produto 3", 30.00,0.0, null, "123456", true, new BrandEntity(), new HashSet<>())
         );
 
         when(productService.findProductByBrand(anyString(), any(SearchQuery.class)))
@@ -286,6 +333,8 @@ public class ProductResourceTest extends ResourceTest {
                 .andExpect(jsonPath("content[0].name").value("Produto 1"))
                 .andExpect(jsonPath("content[0].description").value("Descricao do produto 1"))
                 .andExpect(jsonPath("content[0].price").value(10.0))
+                .andExpect(jsonPath("content[0].discount").value(0.0))
+                .andExpect(jsonPath("content[0].sku").value("123456"))
                 .andExpect(jsonPath("content[0].active").value(true))
                 .andExpect(jsonPath("currentPage").value(0))
                 .andExpect(jsonPath("totalElements").value(3))
@@ -307,9 +356,7 @@ public class ProductResourceTest extends ResourceTest {
     public void findAllProducts() throws Exception {
 
         List<ProductEntity> testProducts = List.of(
-                new ProductEntity(1L, "Produto 1", "Descricao do produto 1", 10.00, true, new BrandEntity(), new HashSet<>()),
-                new ProductEntity(2L, "Produto 2", "Descricao do produto 2", 20.00, true, new BrandEntity(), new HashSet<>()),
-                new ProductEntity(3L, "Produto 3", "Descricao do produto 3", 30.00, true, new BrandEntity(), new HashSet<>())
+                new ProductEntity(1L, "Produto 1", "Descricao do produto 1", 10.00, 0.0, null, "123456", true, new BrandEntity(), new HashSet<>())
         );
 
         when(productService.findAllProducts(anyString(), any(SearchQuery.class)))
@@ -327,6 +374,14 @@ public class ProductResourceTest extends ResourceTest {
                 .andDo(print());
 
         response
+                .andExpect(jsonPath("content[0].id").value(1L))
+                .andExpect(jsonPath("content[0].name").value("Produto 1"))
+                .andExpect(jsonPath("content[0].description").value("Descricao do produto 1"))
+                .andExpect(jsonPath("content[0].price").value(10.0))
+                .andExpect(jsonPath("content[0].discount").value(0.0))
+                .andExpect(jsonPath("content[0].sku").value("123456"))
+                .andExpect(jsonPath("content[0].active").value(true))
+                .andExpect(jsonPath("currentPage").value(0))
                 .andExpect(jsonPath("totalElements").value(3))
                 .andExpect(jsonPath("totalPages").value(1))
                 .andExpect(jsonPath("size").value(10));
@@ -347,14 +402,14 @@ public class ProductResourceTest extends ResourceTest {
     public void findAllProductsByNameProduct() throws Exception {
 
         List<ProductEntity> testProducts = List.of(
-                new ProductEntity(5L, "Produto05", "Descricao do produto 05", 199.99, true, new BrandEntity(), new HashSet<>())
+                new ProductEntity(1L, "Produto 1", "Descricao do produto 1", 10.00, 0.0, null, "123456", true, new BrandEntity(), new HashSet<>())
         );
 
         when(productService.findAllProducts(anyString(), any(SearchQuery.class)))
                 .thenReturn(new Pagination<>(testProducts, 0, 10, 1, 1));
 
         final var request = get(URL.concat("/v1"))
-                .queryParam("productName", "Produto05")
+                .queryParam("productName", "Produto 1")
                 .queryParam("page", "0")
                 .queryParam("size", "10")
                 .accept(APPLICATION_JSON)
@@ -365,10 +420,12 @@ public class ProductResourceTest extends ResourceTest {
                 .andDo(print());
 
         response
-                .andExpect(jsonPath("content[0].id").value(5L))
-                .andExpect(jsonPath("content[0].name").value("Produto05"))
-                .andExpect(jsonPath("content[0].description").value("Descricao do produto 05"))
-                .andExpect(jsonPath("content[0].price").value(199.99))
+                .andExpect(jsonPath("content[0].id").value(1L))
+                .andExpect(jsonPath("content[0].name").value("Produto 1"))
+                .andExpect(jsonPath("content[0].description").value("Descricao do produto 1"))
+                .andExpect(jsonPath("content[0].price").value(10.0))
+                .andExpect(jsonPath("content[0].discount").value(0.0))
+                .andExpect(jsonPath("content[0].sku").value("123456"))
                 .andExpect(jsonPath("content[0].active").value(true))
                 .andExpect(jsonPath("currentPage").value(0))
                 .andExpect(jsonPath("totalElements").value(1))

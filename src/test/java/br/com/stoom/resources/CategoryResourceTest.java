@@ -5,20 +5,27 @@ import br.com.stoom.dto.request.ChangeStatusRequest;
 import br.com.stoom.dto.request.ChangeStatusRequestSet;
 import br.com.stoom.dto.request.CreateCategoryRequest;
 import br.com.stoom.dto.request.CreateCategoryRequestSet;
+import br.com.stoom.entities.BrandEntity;
 import br.com.stoom.entities.CategoryEntity;
 import br.com.stoom.services.category.CategoryService;
 import br.com.stoom.utils.JsonUtils;
+import br.com.stoom.utils.Pagination;
+import br.com.stoom.utils.SearchQuery;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -81,7 +88,7 @@ public class CategoryResourceTest extends ResourceTest {
 
             """
     )
-    public void changeCategoryStatus()  throws Exception {
+    public void changeCategoryStatus() throws Exception {
 
         final var categoryForUpdate = new ChangeStatusRequest(1L, false);
         final var input = new ChangeStatusRequestSet(Set.of(categoryForUpdate));
@@ -133,6 +140,35 @@ public class CategoryResourceTest extends ResourceTest {
     @Test
     @DisplayName(
             """
+                                            
+                Dado algumas categorias anteriormente cadastradas
+                Quando o servico de remocao de categorias for chamado
+                Entao essas categorias devem ser removidas
+                                                
+            """
+    )
+    public void removeCategoryById() throws Exception {
+
+        final var input = Set.of(1L,2L,3L);
+
+        final var request = delete(URL.concat("/v1"))
+                .queryParam("categoryIds", "1,2,3")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON);
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(categoryService).deleteCategory(argThat( ids ->
+                ids != null && input.containsAll(ids) && ids.containsAll(input)
+        ));
+
+    }
+
+    @Test
+    @DisplayName(
+            """
 
                 Dado uma categoria anteriormente cadastrada
                 Quando o endpoint de atualizacao de categoria for chamado
@@ -157,6 +193,55 @@ public class CategoryResourceTest extends ResourceTest {
                 b -> b.getId().equals(input.getId()) &&
                         b.getName().equals(input.getName())
         ));
+
+    }
+
+    @Test
+    @DisplayName(
+            """
+                                            
+                Dado que uma lista de categorias ja cadastrados
+                Quando o servico de busca for chamado
+                E essas categorias estiverem com status ativo
+                Entao todas categorias devem ser listadas
+                                                
+            """
+    )
+    public void findAllCategories() throws Exception {
+
+        final var categories = List.of(
+                new CategoryEntity(1L, "CATEGORIA_A", true),
+                new CategoryEntity(2L, "CATEGORIA_B", true),
+                new CategoryEntity(3L,"CATEGORIA_C", true)
+        );
+
+        when(categoryService.findAllCategories(anyString(), any(SearchQuery.class)))
+                .thenReturn(new Pagination<>(categories, 0, 10, 3, 1));
+
+        final var request = get(URL.concat("/v1"))
+                .queryParam("page", "0")
+                .queryParam("size", "10")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON);
+
+        final var response =  this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        response
+                .andExpect(jsonPath("content[0].id").value(1L))
+                .andExpect(jsonPath("content[0].name").value("CATEGORIA_A"))
+                .andExpect(jsonPath("content[0].active").value(true))
+                .andExpect(jsonPath("content[1].id").value(2L))
+                .andExpect(jsonPath("content[1].name").value("CATEGORIA_B"))
+                .andExpect(jsonPath("content[1].active").value(true))
+                .andExpect(jsonPath("content[2].id").value(3L))
+                .andExpect(jsonPath("content[2].name").value("CATEGORIA_C"))
+                .andExpect(jsonPath("content[2].active").value(true))
+                .andExpect(jsonPath("currentPage").value(0))
+                .andExpect(jsonPath("totalElements").value(3))
+                .andExpect(jsonPath("totalPages").value(1))
+                .andExpect(jsonPath("size").value(10));
 
     }
 }

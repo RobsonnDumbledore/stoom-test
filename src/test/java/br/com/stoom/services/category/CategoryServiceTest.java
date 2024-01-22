@@ -6,6 +6,8 @@ import java.util.Set;
 import br.com.stoom.repositories.BrandRepository;
 import br.com.stoom.repositories.CategoryRepository;
 import br.com.stoom.repositories.ProductRepository;
+import br.com.stoom.utils.SearchQuery;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import br.com.stoom.PostgresGatewayTest;
 import org.junit.jupiter.api.DisplayName;
@@ -21,18 +23,20 @@ public class CategoryServiceTest extends PostgresGatewayTest {
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
     private final ProductRepository productRepository;
+    private final EntityManager entityManager;
 
     @Autowired
     public CategoryServiceTest(
             CategoryService categoryService,
             CategoryRepository categoryRepository,
             BrandRepository brandRepository,
-            ProductRepository productRepository
-    ) {
+            ProductRepository productRepository,
+            EntityManager entityManager) {
         this.categoryService = categoryService;
         this.categoryRepository = categoryRepository;
         this.brandRepository = brandRepository;
         this.productRepository = productRepository;
+        this.entityManager = entityManager;
     }
 
     @Test
@@ -112,6 +116,45 @@ public class CategoryServiceTest extends PostgresGatewayTest {
     @Test
     @DisplayName(
             """
+                                            
+                Dado algumas categorias anteriormente cadastradas
+                Quando o servico de remocao de categorias for chamado
+                Entao essas categorias devem ser removidas
+                                                
+            """
+    )
+    public void removeCategoryById() {
+
+        final var categories = Set.of(
+                new CategoryEntity(
+                        "ELETRONICOS",
+                        true
+                ),
+                new CategoryEntity(
+                        "BELEZA",
+                        true
+                )
+        );
+
+        final var categoriesSaved = categoryRepository.saveAll(categories);
+
+        final var cateogry01 = categoriesSaved.get(0);
+        final var cateogry02 = categoriesSaved.get(1);
+
+        categoryService.deleteCategory(Set.of(cateogry01.getId(), cateogry02.getId()));
+
+        entityManager.flush();
+        entityManager.clear();
+
+        assertTrue(categoryRepository.findById(cateogry01.getId()).isEmpty());
+        assertTrue(categoryRepository.findById(cateogry02.getId()).isEmpty());
+
+    }
+
+
+    @Test
+    @DisplayName(
+            """
                                     
                 Dado uma categoria anteriormente cadastrada
                 Quando o servico de atualizacao de categoria for chamado
@@ -138,6 +181,30 @@ public class CategoryServiceTest extends PostgresGatewayTest {
         assertEquals(1L, categoryAfterUpdate.getId());
         assertEquals("ELETRONICOS ATUALIZADOS", categoryAfterUpdate.getName());
 
+    }
+
+    @Test
+    @DisplayName(
+            """
+                                            
+                Dado que uma lista de categorias ja cadastrados
+                Quando o servico de busca por categoria for chamado
+                E essas categorias estiverem ativas
+                Entao essas categorias devem ser listadas
+                                                
+            """
+    )
+    public void findAllCategories() {
+
+        final var page = SearchQuery.with(0, 10, "", "name", "ASC");
+        final var category = categoryService
+                .findAllCategories(null, page)
+                .content()
+                .stream().findFirst();
+
+        assertTrue(category.get().isActive());
+        assertEquals(category.get().getName(), "ACESSORIOS");
+        assertEquals(category.get().getId(), 3L);
     }
 
 }

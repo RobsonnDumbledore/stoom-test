@@ -65,6 +65,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
+    public void deleteProduct(Set<Long> productIds) {
+
+        logger.info("Starting remove products for {} products.", productIds.size());
+        this.productRepository.deleteByIdIn(productIds);
+
+    }
+
+    @Override
     @Cacheable(cacheNames = "findProductById", key = "#productId")
     public ProductEntity findProductById(Long productId) {
 

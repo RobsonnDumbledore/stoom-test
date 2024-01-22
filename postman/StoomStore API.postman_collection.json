@@ -28,7 +28,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"products\": [\n        {\n            \"name\": \"product005\",\n            \"description\": \"4GB RAM\",\n            \"price\": 1250.45,\n            \"active\": true,\n            \"brandId\": 4,\n            \"categoryIds\": [\n                5\n            ]\n        }\n    ]\n}",
+											"raw": "{\n    \"products\": [\n        {\n            \"name\": \"NEW PRODUCTS\",\n            \"description\": \"NEW DESCRIPTION\",\n            \"price\": 99.85,\n            \"discount\": 5.2,\n            \"imageName\": \"string\",\n            \"sku\": \"123451\",\n            \"active\": true,\n            \"brandId\": 1,\n            \"categoryIds\": [\n                2\n            ]\n        },\n        {\n            \"name\": \"PRODUCT 02\",\n            \"description\": \"NEW DESCRIPTION\",\n            \"price\": 850.85,\n            \"discount\": 5.2,\n            \"imageName\": \"string\",\n            \"sku\": \"96325\",\n            \"active\": true,\n            \"brandId\": 1,\n            \"categoryIds\": [\n                1\n            ]\n        }\n    ]\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -37,37 +37,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{baseUrl}}/api/products/v1/brand?brand=NIKE&page=0&size=10&sort =price&dir=desc",
+											"raw": "{{baseUrl}}/api/products/v1",
 											"host": [
 												"{{baseUrl}}"
 											],
 											"path": [
 												"api",
 												"products",
-												"v1",
-												"brand"
-											],
-											"query": [
-												{
-													"key": "brand",
-													"value": "NIKE"
-												},
-												{
-													"key": "page",
-													"value": "0"
-												},
-												{
-													"key": "size",
-													"value": "10"
-												},
-												{
-													"key": "sort ",
-													"value": "price"
-												},
-												{
-													"key": "dir",
-													"value": "desc"
-												}
+												"v1"
 											]
 										}
 									},
@@ -106,7 +83,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"status\": [\r\n        {\r\n            \"id\": 1,\r\n            \"isActive\": false\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"isActive\": false\r\n        }\r\n    ]\r\n}",
+											"raw": "{\r\n    \"status\": [\r\n        {\r\n            \"id\": 1,\r\n            \"isActive\": false\r\n        }\r\n    ]\r\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -161,7 +138,7 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{baseUrl}}/api/products/v1/category?category=CATEGORY&page=0&size=10&sort =price&dir=desc",
+											"raw": "{{baseUrl}}/api/products/v1/category?category=HEALTH&page=0&size=10&sort =price&dir=desc",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -174,7 +151,7 @@
 											"query": [
 												{
 													"key": "category",
-													"value": "CATEGORY"
+													"value": "HEALTH"
 												},
 												{
 													"key": "page",
@@ -245,7 +222,7 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{baseUrl}}/api/products/v1?productName=&page=0&size=10&sort =price&dir=desc",
+											"raw": "{{baseUrl}}/api/products/v1?page=0&size=10&sort =price&dir=desc",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -257,7 +234,8 @@
 											"query": [
 												{
 													"key": "productName",
-													"value": ""
+													"value": "NEW",
+													"disabled": true
 												},
 												{
 													"key": "page",
@@ -274,6 +252,31 @@
 												{
 													"key": "dir",
 													"value": "desc"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "remove products by id",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/products/v1?productIds=4,5",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"products",
+												"v1"
+											],
+											"query": [
+												{
+													"key": "productIds",
+													"value": "4,5"
 												}
 											]
 										}
@@ -302,7 +305,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"categories\": [\n        {\n            \"name\": \"ELETRONICS\",\n            \"active\": true\n        },\n        {\n            \"name\": \"HEALTH\",\n            \"active\": true\n        }\n    ]\n}",
+											"raw": "{\n    \"categories\": [\n        {\n            \"name\": \"LIFE\",\n            \"active\": true\n        },\n        {\n            \"name\": \"HEALTH\",\n            \"active\": true\n        }\n    ]\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -379,6 +382,77 @@
 										}
 									},
 									"response": []
+								},
+								{
+									"name": "remove category by id",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/categories/v1?categoryIds=1,2",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"categories",
+												"v1"
+											],
+											"query": [
+												{
+													"key": "categoryIds",
+													"value": "1,2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find all categories",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/categories/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"categories",
+												"v1"
+											],
+											"query": [
+												{
+													"key": "categoryName",
+													"value": "HEAL",
+													"disabled": true
+												},
+												{
+													"key": "page",
+													"value": "0",
+													"disabled": true
+												},
+												{
+													"key": "size",
+													"value": "10",
+													"disabled": true
+												},
+												{
+													"key": "sort",
+													"value": "name",
+													"disabled": true
+												},
+												{
+													"key": "dir",
+													"value": "ASC",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"response": []
 								}
 							]
 						},
@@ -428,7 +502,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"brands\": [\n        {\n            \"name\": \"brand006\",\n            \"active\": true\n        }\n    ]\n}",
+											"raw": "{\n    \"brands\": [\n        {\n            \"name\": \"GARDNESS\",\n            \"active\": true\n        },\n        {\n            \"name\": \"TECH88\",\n            \"active\": true\n        }\n    ]\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -521,6 +595,77 @@
 												"api",
 												"brands",
 												"v1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "remove brand by id",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/brands/v1?brandIds=1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"brands",
+												"v1"
+											],
+											"query": [
+												{
+													"key": "brandIds",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find all brands",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/brands/v1",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"brands",
+												"v1"
+											],
+											"query": [
+												{
+													"key": "brandName",
+													"value": "GAR",
+													"disabled": true
+												},
+												{
+													"key": "page",
+													"value": "0",
+													"disabled": true
+												},
+												{
+													"key": "size",
+													"value": "10",
+													"disabled": true
+												},
+												{
+													"key": "sort",
+													"value": "name",
+													"disabled": true
+												},
+												{
+													"key": "dir",
+													"value": "asc",
+													"disabled": true
+												}
 											]
 										}
 									},

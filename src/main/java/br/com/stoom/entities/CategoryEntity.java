@@ -24,6 +24,12 @@ public class CategoryEntity {
     public CategoryEntity() {
     }
 
+    public CategoryEntity(Long id, String name, boolean active) {
+        this.id = id;
+        this.name = name;
+        this.active = active;
+    }
+
     public CategoryEntity(Long id) {
         this.id = id;
     }

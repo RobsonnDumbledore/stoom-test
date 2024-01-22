@@ -1,5 +1,6 @@
 package br.com.stoom.resources;
 
+import java.util.Set;
 import br.com.stoom.utils.Pagination;
 import br.com.stoom.utils.SearchQuery;
 import br.com.stoom.mapper.ProductMapper;
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import br.com.stoom.dto.response.FindProductByBrandResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import br.com.stoom.dto.response.FindProductByCategoryResponse;
+import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -45,6 +47,16 @@ public class ProductResource implements ProductAPI {
         final var product = ProductMapper.toResponse(this.productService.findProductById(productId));
 
         return ResponseEntity.ok(product);
+    }
+
+    @Override
+    @Transactional
+    @DeleteMapping("/v1")
+    public ResponseEntity<Void> removeProductById(Set<Long> productIds) {
+
+        this.productService.deleteProduct(productIds);
+
+        return ResponseEntity.ok().build();
     }
 
     @Override

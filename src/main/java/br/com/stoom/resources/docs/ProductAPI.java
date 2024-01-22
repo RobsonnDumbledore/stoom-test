@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Set;
+
 @Tag(name = "products")
 public interface ProductAPI {
 
@@ -35,6 +37,21 @@ public interface ProductAPI {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     ResponseEntity<FindProductByIdResponse> findProductById(@PathVariable("productId") Long productId);
+
+    @Operation(
+            summary = "remove product by id",
+            description =
+                    """
+                        example:
+                        api/products/v1?productIds=4,5
+                    """
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product removed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    ResponseEntity<Void> removeProductById(@RequestParam Set<Long> productIds);
 
 
     @Operation(summary = "change product status")
@@ -91,7 +108,7 @@ public interface ProductAPI {
     })
     ResponseEntity<Pagination<FindAllProductResponse>> findAllProducts(
 
-            @RequestParam(name = "productName", required = false) String productName,
+            @RequestParam(name = "productName", required = false, defaultValue = "") String productName,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "sort", required = false, defaultValue = "price") String sort,
